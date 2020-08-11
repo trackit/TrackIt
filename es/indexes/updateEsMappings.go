@@ -12,21 +12,23 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-package utils
+package indexes
 
 import (
-	"time"
-
-	utils "github.com/trackit/trackit/aws/usageReports"
+	"context"
 )
 
-// TaggingReportDocument is an entry in ES' tagging index
-type TaggingReportDocument struct {
-	Account      string      `json:"account"`
-	ReportDate   time.Time   `json:"reportDate"`
-	ResourceID   string      `json:"resourceId"`
-	ResourceType string      `json:"resourceType"`
-	Region       string      `json:"region"`
-	URL          string      `json:"url"`
-	Tags         []utils.Tag `json:"tags"`
+// UpdateEsMappings updates Elasticsearch index mappings
+func UpdateEsMappings(ctx context.Context) error {
+	err := discoverIndexes(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = updateOutdatedIndexes(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
